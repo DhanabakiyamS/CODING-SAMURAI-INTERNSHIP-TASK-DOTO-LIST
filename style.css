@@ -1,0 +1,204 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('backgroundimg.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.todo-app {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(199, 218, 203, 0.436);
+  outline: 2px solid rgb(17, 97, 5);
+  margin: 100px auto 20px;
+  padding: 40px 30px 70px;
+  border-radius: 10px;
+}
+
+.todo-app h1 img {
+  width: 30px;
+  margin-left: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 30px;
+}
+
+#inputbox {
+  width: 70%;
+  border-radius: 30px;
+  background-color: yellow;
+  font-size: 17px;
+  text-align: center;
+  caret-color: red;
+}
+
+select#prioritySelect {
+  background-color: rgb(20, 124, 39);
+  border-radius: 30px;
+  color: white;
+}
+
+#prioritySelect:hover {
+  background: #5afa10f1;
+  color: black;
+}
+
+#dueDate {
+  width: 3.5%;
+  border-radius: 30px;
+  background-color: rgb(20, 124, 39);
+  cursor: pointer;
+
+
+}
+
+#dueDate:hover {
+  background: #4ee00a93;
+}
+
+#addbtn {
+  width: 13%;
+  border-radius: 30px;
+  background-color: rgb(20, 124, 39);
+  font-size: 17px;
+  color: white;
+  cursor: pointer;
+
+}
+
+button#addbtn:hover {
+  background: #5afa10f1;
+  color: black;
+}
+
+#clearbtn {
+  border-radius: 30px;
+  background-color: rgb(20, 124, 39);
+  font-size: 13px;
+  color: white;
+  width: 13%;
+  cursor: pointer;
+
+}
+
+button#clearbtn:hover {
+  background: red;
+
+}
+
+.row2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-radius: 30px;
+  font-weight: bold;
+
+
+}
+
+.todo-app label img {
+  width: 20px;
+}
+
+.filter-section:hover {
+  background: #5afa10f1;
+  border-radius: 30px;
+
+}
+
+#statusFilter {
+  background-color: rgb(20, 124, 39);
+  color: white;
+}
+
+select#statusFilter {
+  border-radius: 30px;
+}
+
+
+#sortCriteria {
+  background-color: rgb(20, 124, 39);
+  color: white;
+
+}
+
+select#sortCriteria {
+  border-radius: 30px;
+}
+
+
+.sort-section:hover {
+  background: #5afa10f1;
+  border-radius: 30px;
+}
+
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.deleteBtn {
+
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+button.deleteBtn {
+  background: url('delete.png')center center no-repeat;
+  background-size: 30px 30px;
+  padding: 14px 30px;
+  cursor: pointer;
+  border-radius: 30px;
+
+}
+
+button.deleteBtn:hover {
+  background-color: red;
+}
+
+button.edit {
+
+  background: url('edit.png')center center no-repeat;
+  background-size: 30px 30px;
+  padding: 14px 30px;
+  cursor: pointer;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+
+}
+
+button.edit:hover {
+  background-color: rgb(96, 94, 199);
+}
+
+#taskList {
+  background-color: rgba(3, 7, 0, 0.682);
+  border-radius: 30px;
+  font-size: 17px;
+
+}
+
+#taskList li {
+  font-weight: bold;
+
+
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: 0.7;
+}

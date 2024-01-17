@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ToDo List</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="titleimg.png" />
+</head>
+
+<body>
+    <center>
+        <div class="todo-app">
+            <h1>To-Do List <img src="img2.png" alt="icon"></h1>
+            <div class="row">
+                <input type="text" id="inputbox" placeholder="Type your text here">
+                <div class="priority-dropdown">
+                    <select id="prioritySelect">
+                        <option value="none" selected>Select Priority</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <input type="date" id="dueDate">
+                <button id="addbtn" onclick="add()">Add</button>
+                <button id="clearbtn" onclick="clearData()">Clear All</button>
+            </div>
+            <hr>
+            <div class="row2">
+                <div class="filter-section" title="Filter">
+                    <label for="statusFilter"><img src="filter.png" alt="icon">Filter</label>
+                    <select id="statusFilter" onchange="filterTasks()">
+                        <option value="all">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="sort-section" title="Sort">
+                    <label for="sortCriteria"><img src="sort.png" alt="icon">Sort</label>
+                    <select id="sortCriteria" onchange="sortTasks()">
+                        <option value="none">None</option>
+                        <option value="priority">Priority</option>
+                        <option value="dueDate">Due Date</option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <ul id="taskList"></ul>
+        </div>
+    </center>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default priority when the page loads
+            var prioritySelect = document.getElementById('prioritySelect');
+            prioritySelect.value = 'none';
+
+            // Load tasks from local storage when the page loads
+            loadTasks();
+        });
+
+        function add() {
+            var taskInput = document.getElementById('inputbox');
+            var dueDateInput = document.getElementById('dueDate');
+            var prioritySelect = document.getElementById('prioritySelect');
+            var taskList = document.getElementById('taskList');
+
+            if (taskInput.value.trim() !== '' && dueDateInput.value.trim() !== '' && prioritySelect.value.trim() !== 'none') {
+                var li = document.createElement('li');
+                var priorityColor = getPriorityColor(prioritySelect.value);
+
+                li.style.color = priorityColor;
+                li.innerHTML = '<input type="checkbox" onclick="checkItem(this)" title="Check box">' + taskInput.value + ' (Due Date: ' + dueDateInput.value + ', Priority: ' + prioritySelect.value + ')' + '<button class="edit" onclick="editItem(this)" title="Edit Task"></button>' + '<button class="deleteBtn" onclick="deleteTask(this)" title="Delete Task"></button>';
+                taskList.appendChild(li);
+
+                // Save tasks to local storage after adding
+                saveTasks();
+
+                taskInput.value = '';
+                dueDateInput.value = '';
+                prioritySelect.value = 'none';
+            } else {
+                alert('Please enter a valid task, due date, and select a priority before adding.');
+            }
+
+
+
+        }
+
+
+        function deleteTask(btn) {
+            var li = btn.parentNode;
+            li.parentNode.removeChild(li);
+
+            // Save tasks to local storage after deleting
+            saveTasks();
+        }
+
+        function clearData() {
+            var taskList = document.getElementById('taskList');
+            while (taskList.firstChild) {
+                taskList.removeChild(taskList.firstChild);
+            }
+
+            // Clear tasks from local storage after clearing
+            localStorage.removeItem('tasks');
+        }
+
+        function saveTasks() {
+            var taskList = document.getElementById('taskList').innerHTML;
+            localStorage.setItem('tasks', taskList);
+        }
+
+        function loadTasks() {
+            var taskList = document.getElementById('taskList');
+            var savedTasks = localStorage.getItem('tasks');
+
+            if (savedTasks) {
+                taskList.innerHTML = savedTasks;
+
+                // Apply styles and 'completed' class to tasks
+                var tasks = taskList.getElementsByTagName('li');
+                for (var i = 0; i < tasks.length; i++) {
+                    var task = tasks[i];
+                    var checkbox = task.querySelector('input[type="checkbox"]');
+                    var completed = task.classList.contains('completed');
+
+                    // Apply 'completed' class and checkbox state
+                    task.classList.toggle('completed', completed);
+                    checkbox.checked = completed;
+
+                    // Set color based on priority
+                    var priorityMatch = task.innerText.match(/Priority: (low|medium|high)/);
+                    if (priorityMatch) {
+                        var priorityColor = getPriorityColor(priorityMatch[1]);
+                        task.style.color = priorityColor;
+                    }
+                }
+            }
+        }
+
+
+
+        function getPriorityColor(priority) {
+            // Define colors based on priority values
+            var colorMap = {
+                'low': 'greenyellow',
+                'medium': 'orange',
+                'high': 'red'
+            };
+
+            return colorMap[priority] || 'black';
+        }
+
+
+        function sortTasks() {
+            var taskList = document.getElementById('taskList');
+            var sortCriteria = document.getElementById('sortCriteria').value;
+
+            var tasks = Array.from(taskList.children);
+
+            if (sortCriteria === 'priority') {
+                tasks.sort(function (a, b) {
+                    var priorityOrder = { 'low': 2, 'medium': 1, 'high': 0 };
+                    var priorityA = a.innerText.match(/Priority: (low|medium|high)/)[1];
+                    var priorityB = b.innerText.match(/Priority: (low|medium|high)/)[1];
+                    return priorityOrder[priorityA] - priorityOrder[priorityB];
+                });
+            } else if (sortCriteria === 'dueDate') {
+                tasks.sort(function (a, b) {
+                    var dueDateA = new Date(a.innerText.match(/Due Date: (.*?)\,/)[1]);
+                    var dueDateB = new Date(b.innerText.match(/Due Date: (.*?)\,/)[1]);
+                    return dueDateA - dueDateB;
+                });
+            }
+
+            // Clear the existing task list
+            while (taskList.firstChild) {
+                taskList.removeChild(taskList.firstChild);
+            }
+
+            // Append the sorted tasks to the task list
+            tasks.forEach(function (task) {
+                taskList.appendChild(task);
+            });
+            saveTasks();
+        }
+        function checkItem(checkbox) {
+            var li = checkbox.parentNode;
+            li.classList.toggle('completed', checkbox.checked);
+            saveTasks();
+        }
+
+        function filterTasks() {
+            var taskList = document.getElementById('taskList');
+            var statusFilter = document.getElementById('statusFilter').value;
+            var tasks = taskList.getElementsByTagName('li');
+            var originalOrder = Array.from(tasks); // Store the original order
+
+            // Clear the existing task list
+            while (taskList.firstChild) {
+                taskList.removeChild(taskList.firstChild);
+            }
+
+            // Filter tasks based on the selected filter
+            for (var i = 0; i < originalOrder.length; i++) {
+                var task = originalOrder[i];
+                var completed = task.classList.contains('completed');
+
+                switch (statusFilter) {
+                    case 'all':
+                        task.style.display = 'block';
+                        break;
+                    case 'pending':
+                        task.style.display = completed ? 'none' : 'list-item';
+                        break;
+                    case 'completed':
+                        task.style.display = completed ? 'list-item' : 'none';
+                        break;
+                }
+
+                // Append the tasks back in the original order
+                taskList.appendChild(task);
+            }
+
+            saveTasks();
+        }
+        function editItem(btn) {
+            var li = btn.parentNode;
+            var taskInput = li.innerText.split('(Due Date:')[0].trim();
+            var priority = li.innerText.split('Priority: ')[1].split(')')[0].trim();
+            var dueDate = li.innerText.split('Due Date: ')[1].split(',')[0].trim();
+
+            var newTaskInput = prompt('Edit Task:', taskInput);
+            var newPriority = prompt('Edit Priority (low, medium, high):', priority);
+            var newDueDate = prompt('Edit Due Date (YYYY-MM-DD):', dueDate);
+
+            if (newTaskInput !== null && newPriority !== null && newDueDate !== null) {
+                // Set color based on new priority
+                var priorityColor = getPriorityColor(newPriority);
+
+                // Check if the task was completed before editing
+                var completed = li.classList.contains('completed');
+
+                // Update the innerHTML of the list item
+                li.innerHTML = '<input type="checkbox" onclick="checkItem(this)" ' + (completed ? 'checked' : '') + '>' + newTaskInput + ' (Due Date: ' + newDueDate + ', Priority: ' + newPriority + ')' + '<button class="edit" onclick="editItem(this)"></button>' + '<button class="deleteBtn" onclick="deleteTask(this)"></button>';
+
+                // Update the color based on the new priority
+                li.style.color = priorityColor;
+            }
+            saveTasks();
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>
