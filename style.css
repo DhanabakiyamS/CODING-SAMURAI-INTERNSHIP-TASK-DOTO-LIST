@@ -55,6 +55,16 @@ select#prioritySelect {
 
 }
 
+.row #dueDate{
+  background: url('duedate.png')center center no-repeat;
+  background-size: 30px 30px;
+  padding: 1px 4px;
+  cursor: pointer;
+  border-radius: 30px;
+
+}
+
+
 #dueDate:hover {
   background: #4ee00a93;
 }
